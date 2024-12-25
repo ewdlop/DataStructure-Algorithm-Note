@@ -99,7 +99,7 @@ using System.Collections.Generic;
     graph.AddVertex(2);
     graph.AddVertex(3);
     graph.AddVertex(4);
-    // Adding edges
+    // Adding edgess
     graph.AddEdge(1, 2, isDirected: true);
     graph.AddEdge(1, 3);
     graph.AddEdge(2, 4);
