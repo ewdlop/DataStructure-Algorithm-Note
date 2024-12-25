@@ -4,7 +4,7 @@ namespace DataStructure;
 public class Graph<T>(Dictionary<T, List<T>> pairs) where T : notnull
 {
     // Dictionary to store the adjacency list
-    protected Dictionary<T, List<T>> AdjacencyList { get; init; } = pairs;
+    public Dictionary<T, List<T>> AdjacencyList { get; protected set; } = pairs;
 
     // Constructor to initialize the graph
     public Graph() : this([]) { }
@@ -49,6 +49,26 @@ public class Graph<T>(Dictionary<T, List<T>> pairs) where T : notnull
         {
             Console.WriteLine($"{vertex} -> {string.Join(" ", AdjacencyList[vertex])}");
         }
+    }
+
+    public void Invert()
+    {
+        Dictionary<T, List<T>> invertedPairs = new();
+        foreach (T vertex in AdjacencyList.Keys)
+        {
+            foreach (T adjacent in AdjacencyList[vertex])
+            {
+                if (invertedPairs.TryGetValue(adjacent, out List<T>? value))
+                {
+                    value.Add(vertex);
+                }
+                else
+                {
+                    invertedPairs[adjacent] = [vertex];
+                }
+            }
+        }
+        AdjacencyList = invertedPairs;
     }
 
     public static readonly Graph<T> Empty = new Graph<T>();
