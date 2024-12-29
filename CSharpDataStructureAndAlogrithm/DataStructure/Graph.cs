@@ -1,66 +1,77 @@
 ﻿// Define the Graph class
+
 namespace DataStructure;
 
-public class Graph<T>(Dictionary<T, List<T>> pairs) where T : notnull
+public class Graph<T>(Dictionary<T, List<T>>? pairs) where T : notnull
 {
-    // Dictionary to store the adjacency list
-    public Dictionary<T, List<T>> AdjacencyList { get; protected set; } = pairs;
+    // Dictionary to store the adjacency list for each vertex.
+    public virtual Dictionary<T, List<T>>? AdjacencyListDictionary { get; protected set; } = pairs;
+
+    // For backward compatibility
+    public Dictionary<T, List<T>>? AdjacencyList
+    {
+        get => AdjacencyListDictionary;
+        set
+        {
+            AdjacencyListDictionary = value;
+        }
+    }
 
     // Constructor to initialize the graph
     public Graph() : this([]) { }
 
     // Method to add a vertex to the graph
-    public void AddVertex(T vertex)
+    public virtual void AddVertex(T vertex)
     {
-        if (!AdjacencyList.ContainsKey(vertex))
+        if (!(AdjacencyListDictionary ??= []).ContainsKey(vertex))
         {
-            AdjacencyList[vertex] = [];
+            AdjacencyListDictionary[vertex] = [];
         }
     }
 
     // Method to add an edge to the graph
-    public void AddEdge(T vertex1, T vertex2, bool isDirected = false)
+    public virtual void AddEdge(T vertex1, T vertex2, bool isDirected = false)
     {
         // Add the edge from vertex1 to vertex2
-        if (AdjacencyList.TryGetValue(vertex1, out List<T>? value1))
+        if ((AdjacencyListDictionary ??= []).TryGetValue(vertex1, out List<T>? value1))
         {
-            value1.Add(vertex2);
+            (value1 ??= []).Add(vertex2);
         }
         else
         {
-            AdjacencyList[vertex1] = [ vertex2 ];
+            AdjacencyListDictionary[vertex1] = [ vertex2 ];
         }
         if(isDirected) return;
         // For an undirected edge, add the reverse edge as well
-        if (AdjacencyList.TryGetValue(vertex2, out List<T>? value2))
+        if (AdjacencyListDictionary.TryGetValue(vertex2, out List<T>? value2))
         {
-            value2.Add(vertex1);
+            (value2 ??= []).Add(vertex1);
         }
         else
         {
-            AdjacencyList[vertex2] = [ vertex1 ];
+            AdjacencyListDictionary[vertex2] = [ vertex1 ];
         }
     }
 
     // Method to display the graph
-    public void DisplayGraph()
+    public virtual void DisplayGraph()
     {
-        foreach (T vertex in AdjacencyList.Keys)
+        foreach (T vertex in (AdjacencyListDictionary ??= []).Keys)
         {
-            Console.WriteLine($"{vertex} -> {string.Join(" ", AdjacencyList[vertex])}");
+            Console.WriteLine($"{vertex} -> {string.Join(" ", AdjacencyListDictionary[vertex])}");
         }
     }
 
-    public void Invert()
+    public virtual void Invert()
     {
-        Dictionary<T, List<T>> invertedPairs = new();
-        foreach (T vertex in AdjacencyList.Keys)
+        Dictionary<T, List<T>> invertedPairs = [];
+        foreach (T vertex in (AdjacencyListDictionary ??= []).Keys)
         {
-            foreach (T adjacent in AdjacencyList[vertex])
+            foreach (T adjacent in AdjacencyListDictionary[vertex])
             {
                 if (invertedPairs.TryGetValue(adjacent, out List<T>? value))
                 {
-                    value.Add(vertex);
+                    (value ??= []).Add(vertex);
                 }
                 else
                 {
@@ -68,7 +79,7 @@ public class Graph<T>(Dictionary<T, List<T>> pairs) where T : notnull
                 }
             }
         }
-        AdjacencyList = invertedPairs;
+        AdjacencyListDictionary = invertedPairs;
     }
 
     public static readonly Graph<T> Empty = new Graph<T>();

@@ -1,8 +1,9 @@
 ﻿using DataStructure;
 using System.Collections;
-using System.Collections.Generic;
 
 {
+    Console.WriteLine("Queue");
+
     Queue<int> queue = [];
     queue.Enqueue(1);
     queue.Enqueue(2);
@@ -18,6 +19,8 @@ using System.Collections.Generic;
     Console.WriteLine(queue.Dequeue()); // 5
 }
 {
+    Console.WriteLine("Stack");
+
     Stack<int> stack = [];
     stack.Push(1);
     stack.Push(2);
@@ -32,6 +35,8 @@ using System.Collections.Generic;
     Console.WriteLine(stack.Pop()); // 1
 }
 {
+    Console.WriteLine("LinkedList");
+
     LinkedList<int> linkedList = [];
     linkedList.AddFirst(1);
     linkedList.AddFirst(2);
@@ -51,6 +56,9 @@ using System.Collections.Generic;
     }
 }
 {
+
+    Console.WriteLine("Dictionary");
+
     Dictionary<int, string> dictionary = new()
     {
         { 1, "One" },
@@ -60,25 +68,44 @@ using System.Collections.Generic;
     dictionary.Add(4, "Four");
 
     dictionary.TryGetValue(1, out string? value);
+
     Console.WriteLine(value); // One
 }
 {
+    Console.WriteLine("list");
+
     List<int> list = [1, 2, 3, 4, 5, 6];
     list.Insert(0, 0);
     list.Remove(3);
     list.RemoveAt(0);
+
+    Console.WriteLine(list.Count); // 5
 }
 {
+    Console.WriteLine("HashSet");
+
     HashSet<int> hashSet = [1, 2, 3, 4, 4, 6];
     hashSet.Remove(3);
     hashSet.Add(4);
     hashSet.Add(5);
+
     Console.WriteLine(hashSet.Count); // 5
 }
 {
+    Console.WriteLine("ArrayList");
+
     ArrayList arrayList = [decimal.MaxValue, decimal.MinValue, decimal.MinusOne, 5];
+
+    Console.WriteLine(arrayList.Count); // 4
+    Console.WriteLine(arrayList[0]); // 79228162514264337593543950335m
+    Console.WriteLine(arrayList[1]); // -79228162514264337593543950335m
+    Console.WriteLine(arrayList[2]); // -1
+    Console.WriteLine(arrayList[3]); // 5
+
 }
 {
+    Console.WriteLine("PriorityQueue");
+
     PriorityQueue<int, int> priorityQueue = new();
     priorityQueue.Enqueue(1, 1);
     priorityQueue.Enqueue(2, 2);
@@ -93,13 +120,16 @@ using System.Collections.Generic;
     Console.WriteLine(priorityQueue.Dequeue()); // 2
 }
 {
+    Console.WriteLine("Graph");
+
     Graph<int> graph = new();
     // Adding vertices
     graph.AddVertex(1);
     graph.AddVertex(2);
     graph.AddVertex(3);
     graph.AddVertex(4);
-    // Adding edgess
+
+    // Adding edges
     graph.AddEdge(1, 2, isDirected: true);
     graph.AddEdge(1, 3);
     graph.AddEdge(2, 4);
@@ -107,8 +137,11 @@ using System.Collections.Generic;
     // Display the graph
     graph.DisplayGraph();
 
+    Console.WriteLine("Inverted Graph");
     graph.Invert();
     graph.DisplayGraph();
 }
 {
+    Rope rope = new("Hello, World!");
+    Console.WriteLine(rope[0..5]); // Hello
 }
