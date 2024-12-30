@@ -1,5 +1,7 @@
-﻿using DataStructure;
+﻿using Algorithm;
+using DataStructure;
 using System.Collections;
+using static DataStructure.BPlusTree;
 
 {
     Console.WriteLine("Queue");
@@ -144,5 +146,79 @@ using System.Collections;
 {
     Rope rope = new("Hello, World!");
     Console.WriteLine(rope[0..5]); // Hello
-    
+}
+{
+    SplayTree<int> tree = new SplayTree<int>();
+
+    tree.Insert(10);
+    tree.Insert(20);
+    tree.Insert(30);
+    tree.Insert(40);
+    tree.Insert(50);
+    tree.Insert(25);
+
+    Console.WriteLine("In-order traversal of the tree:");
+    tree.PrintTree();
+
+    Console.WriteLine("Search for 20 in the tree:");
+    bool found = tree.Search(20);
+    Console.WriteLine(found ? "Found" : "Not Found");
+
+    Console.WriteLine("In-order traversal after searching for 20:");
+    tree.PrintTree();
+
+    Console.WriteLine("Delete 20 from the tree:");
+    tree.Delete(20);
+
+    Console.WriteLine("In-order traversal after deleting 20:");
+    tree.PrintTree();
+}
+{
+    string inputFilePath = "input.txt";
+    string outputFilePath = "output.txt";
+    int chunkSize = 1000; // Number of integers that fit into memory
+
+    List<string> tempFileNames = Sorter.SortAndSaveChunks(inputFilePath, chunkSize);
+    Sorter.NWayMerge(tempFileNames, outputFilePath);
+
+    Console.WriteLine("Sorting completed. Output written to " + outputFilePath);
+}
+{
+    BTree tree = new BTree(3);
+    // Insertions would go here...
+
+    tree.Traverse();
+    Console.WriteLine();
+    int key = 10;
+    BTree.BTreeNode result = tree.Search(key);
+    Console.WriteLine(result != null ? "Key found" : "Key not found");
+}
+{
+    BPlusTree tree = new BPlusTree(3);
+    // Insertions would go here...
+
+    tree.Traverse();
+    Console.WriteLine();
+
+    int key = 10;
+    BPlusTreeNode result = tree.Search(key);
+    Console.WriteLine(result != null ? "Key found" : "Key not found");
+}
+{
+    RTree rTree = new RTree();
+
+    rTree.Insert(new Rectangle(1, 1, 2, 2));
+    rTree.Insert(new Rectangle(2, 2, 3, 3));
+    rTree.Insert(new Rectangle(3, 3, 4, 4));
+    rTree.Insert(new Rectangle(4, 4, 5, 5));
+    rTree.Insert(new Rectangle(5, 5, 6, 6));
+
+    Rectangle query = new Rectangle(2.5, 2.5, 4.5, 4.5);
+    List<Rectangle> result = rTree.Search(query);
+
+    Console.WriteLine("Rectangles intersecting with query:");
+    foreach (var rect in result)
+    {
+        Console.WriteLine($"({rect.MinX}, {rect.MinY}) - ({rect.MaxX}, {rect.MaxY})");
+    }
 }

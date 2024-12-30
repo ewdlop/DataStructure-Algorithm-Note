@@ -97,4 +97,86 @@ public static class Sorter
             if (!swapped) break;
         }
     }
+
+    public static List<string> SortAndSaveChunks(string inputFilePath, int chunkSize)
+    {
+        List<string> tempFileNames = new List<string>();
+        using (StreamReader reader = new StreamReader(inputFilePath))
+        {
+            int[] buffer = new int[chunkSize];
+            int count;
+            while ((count = ReadChunk(reader, buffer)) > 0)
+            {
+                Array.Sort(buffer, 0, count);
+                string tempFileName = Path.GetTempFileName();
+                WriteChunk(tempFileName, buffer, count);
+                tempFileNames.Add(tempFileName);
+            }
+        }
+        return tempFileNames;
+    }
+
+    // Function to read a chunk of data
+    public static int ReadChunk(StreamReader reader, int[] buffer)
+    {
+        int count = 0;
+        string line;
+        while (count < buffer.Length && (line = reader.ReadLine()) != null)
+        {
+            buffer[count++] = int.Parse(line);
+        }
+        return count;
+    }
+
+    // Function to write a chunk of data to a temporary file
+    public static void WriteChunk(string filePath, int[] buffer, int count)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            for (int i = 0; i < count; i++)
+            {
+                writer.WriteLine(buffer[i]);
+            }
+        }
+    }
+
+    // Function to perform n-way merge
+    public static void NWayMerge(List<string> tempFileNames, string outputFilePath)
+    {
+        using (StreamWriter writer = new StreamWriter(outputFilePath))
+        {
+            List<StreamReader> readers = tempFileNames.Select(fileName => new StreamReader(fileName)).ToList();
+
+            PriorityQueue<(int value, int index), int> minHeap = new PriorityQueue<(int value, int index), int>();
+
+            for (int i = 0; i < readers.Count; i++)
+            {
+                if (int.TryParse(readers[i].ReadLine(), out int value))
+                {
+                    minHeap.Enqueue((value, i), value);
+                }
+            }
+
+            while (minHeap.Count > 0)
+            {
+                var (value, index) = minHeap.Dequeue();
+                writer.WriteLine(value);
+
+                if (int.TryParse(readers[index].ReadLine(), out int nextValue))
+                {
+                    minHeap.Enqueue((nextValue, index), nextValue);
+                }
+            }
+
+            foreach (var reader in readers)
+            {
+                reader.Dispose();
+            }
+        }
+
+        foreach (var tempFileName in tempFileNames)
+        {
+            File.Delete(tempFileName);
+        }
+    }
 }
