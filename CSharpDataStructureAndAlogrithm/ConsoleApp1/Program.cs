@@ -222,3 +222,21 @@ using static DataStructure.BPlusTree;
         Console.WriteLine($"({rect.MinX}, {rect.MinY}) - ({rect.MaxX}, {rect.MaxY})");
     }
 }
+{
+    MinHeap minHeap = new MinHeap();
+
+    minHeap.Insert(3);
+    minHeap.Insert(2);
+    minHeap.Insert(15);
+    minHeap.Insert(5);
+    minHeap.Insert(4);
+    minHeap.Insert(45);
+
+    Console.WriteLine("Min-Heap:");
+    minHeap.PrintHeap();
+
+    Console.WriteLine("Extracted Min: " + minHeap.ExtractMin());
+
+    Console.WriteLine("Min-Heap after extraction:");
+    minHeap.PrintHeap();
+}

@@ -1,4 +1,7 @@
-﻿namespace DataStructure;
+﻿using static DataStructure.Rope;
+using System.Drawing;
+
+namespace DataStructure;
 
 public class Trie
 {
