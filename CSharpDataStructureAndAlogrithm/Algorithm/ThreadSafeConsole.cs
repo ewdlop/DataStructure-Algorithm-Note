@@ -2,10 +2,18 @@
 
 namespace Algorithm;
 
+
+/// <summary>
+/// Thread safe operations for Console
+/// </summary>
 public static class ThreadSafeConsole
 {
     private static readonly object _lock = new object();
 
+    /// <summary>
+    /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
+    /// </summary>
+    /// <param name="message"></param>
     public static void WriteLine(string message)
     {
         lock (_lock)
@@ -13,6 +21,11 @@ public static class ThreadSafeConsole
             Console.WriteLine(message);
         }
     }
+
+    /// <summary>
+    /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
+    /// </summary>
+    /// <param name="message"></param>
     public static void Write(string message)
     {
         lock (_lock)
@@ -185,4 +198,3 @@ public static class ThreadSafeConsole
         });
     }
 }
-

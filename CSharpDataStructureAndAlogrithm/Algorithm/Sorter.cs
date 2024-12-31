@@ -101,17 +101,24 @@ public static class Sorter
     public static List<string> SortAndSaveChunks(string inputFilePath, int chunkSize)
     {
         List<string> tempFileNames = new List<string>();
-        using (StreamReader reader = new StreamReader(inputFilePath))
+        if(File.Exists(inputFilePath))
         {
-            int[] buffer = new int[chunkSize];
-            int count;
-            while ((count = ReadChunk(reader, buffer)) > 0)
+            using (StreamReader reader = new StreamReader(inputFilePath))
             {
-                Array.Sort(buffer, 0, count);
-                string tempFileName = Path.GetTempFileName();
-                WriteChunk(tempFileName, buffer, count);
-                tempFileNames.Add(tempFileName);
+                int[] buffer = new int[chunkSize];
+                int count;
+                while ((count = ReadChunk(reader, buffer)) > 0)
+                {
+                    Array.Sort(buffer, 0, count);
+                    string tempFileName = Path.GetTempFileName();
+                    WriteChunk(tempFileName, buffer, count);
+                    tempFileNames.Add(tempFileName);
+                }
             }
+        }
+        else
+        {
+            throw new FileNotFoundException("The file does not exist.", inputFilePath);
         }
         return tempFileNames;
     }

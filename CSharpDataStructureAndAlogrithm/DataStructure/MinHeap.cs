@@ -40,9 +40,9 @@ public class MinHeap
 
         if (heap.Count == 1)
         {
-            int root = heap[0];
+            int temp_root = heap[0];
             heap.RemoveAt(0);
-            return root;
+            return temp_root;
         }
 
         int root = heap[0];

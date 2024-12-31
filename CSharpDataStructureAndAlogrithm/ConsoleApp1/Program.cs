@@ -1,6 +1,10 @@
 ﻿using Algorithm;
 using DataStructure;
+using DataStructure.Models;
 using System.Collections;
+using System.Collections.Frozen;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using static DataStructure.BPlusTree;
 
 {
@@ -178,10 +182,16 @@ using static DataStructure.BPlusTree;
     string outputFilePath = "output.txt";
     int chunkSize = 1000; // Number of integers that fit into memory
 
-    List<string> tempFileNames = Sorter.SortAndSaveChunks(inputFilePath, chunkSize);
-    Sorter.NWayMerge(tempFileNames, outputFilePath);
-
-    Console.WriteLine("Sorting completed. Output written to " + outputFilePath);
+    try
+    {
+        List<string> tempFileNames = Sorter.SortAndSaveChunks(inputFilePath, chunkSize);
+        Sorter.NWayMerge(tempFileNames, outputFilePath);
+        Console.WriteLine("Sorting completed. Output written to " + outputFilePath);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("An error occurred: " + ex.Message);
+    }
 }
 {
     BTree tree = new BTree(3);
@@ -239,4 +249,140 @@ using static DataStructure.BPlusTree;
 
     Console.WriteLine("Min-Heap after extraction:");
     minHeap.PrintHeap();
+}
+{
+    System.Collections.Frozen.FrozenDictionary<int, StudentName> frozenDictionary = Enumerable.Range(1, 10)
+        .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+        .ToFrozenDictionary(x => x.ID, x => x);
+
+    //immutable dictionary
+    System.Collections.Frozen.FrozenDictionary<int, StudentName> frozenDictionary2 = Enumerable.Range(1, 10)
+        .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+        .ToFrozenDictionary(x => x.ID, x => x);
+
+    frozenDictionary2.TryAdd(11, new StudentName("First-11", "Last-11", 11));
+    frozenDictionary2.TryAdd(12, new StudentName("First-12", "Last-12", 12));
+    frozenDictionary2.TryAdd(13, new StudentName("First-13", "Last-13", 13));
+
+    //immutable dictionary
+
+    //https://github.com/dotnet/csharplang/discussions/96
+
+
+    frozenDictionary.Equals(frozenDictionary2).Print();
+    frozenDictionary.SequenceEqual(frozenDictionary2).Print();
+}
+ImmutableArray<int> immutableArray2 = ImmutableArray.Create(1, 2, 3, 4, 5);
+{
+    ImmutableArray<int> immutableArray = ImmutableArray.Create(1, 2, 3, 4, 5);
+    immutableArray.Equals(immutableArray2).Print();
+    immutableArray.SequenceEqual(immutableArray2).Print();
+    immutableArray2 = immutableArray.Add(6);
+}
+ImmutableDictionary<int, StudentName> immutableDictionary = Enumerable.Range(1, 10)
+        .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+        .ToImmutableDictionary(x => x.ID, x => x);
+{
+    ImmutableDictionary<int, StudentName> immutableDictionary2 = Enumerable.Range(1, 10)
+        .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+        .ToImmutableDictionary(x => x.ID, x => x);
+    immutableDictionary.Equals(immutableDictionary2).Print();
+    immutableDictionary.SequenceEqual(immutableDictionary2).Print();
+    immutableDictionary2 = immutableDictionary.Add(11, new StudentName("First-11", "Last-11", 11));
+}
+{
+    ImmutableHashSet<int> immutableHashSet = ImmutableHashSet.Create(1, 2, 3, 4, 5);
+    ImmutableHashSet<int> immutableHashSet2 = ImmutableHashSet.Create(1, 2, 3, 4, 5);
+    immutableHashSet.Equals(immutableHashSet2).Print();
+    immutableHashSet.SequenceEqual(immutableHashSet2).Print();
+    immutableHashSet.Add(6).Print();
+}
+{
+    Console.WriteLine("ImmutableQueue");
+
+    ImmutableQueue<int> immutableQueue = ImmutableQueue.Create(1, 2, 3, 4, 5);
+    ImmutableQueue<int> immutableQueue2 = ImmutableQueue.Create(1, 2, 3, 4, 5);
+    immutableQueue.Equals(immutableQueue2).Print();
+    immutableQueue.SequenceEqual(immutableQueue2).Print();
+    immutableQueue.Dequeue();
+    immutableQueue.GetHashCode().Print();
+    immutableQueue.Dequeue();
+    immutableQueue.GetHashCode().Print();
+    foreach (int item in immutableQueue)
+    {
+        Console.Write(item);
+    }
+    immutableQueue.Dequeue();
+    immutableQueue.GetHashCode().Print();
+    immutableQueue.Dequeue();
+    immutableQueue.GetHashCode().Print();
+    immutableQueue = immutableQueue.Dequeue();
+
+    immutableQueue.GetHashCode().Print();
+    if (immutableQueue.IsEmpty)
+    {
+        Console.WriteLine("Queue is empty");
+    }
+    immutableQueue.Enqueue(1);
+}
+{
+    ImmutableStack<int> immutableStack = ImmutableStack.Create(1, 2, 3, 4, 5);
+    ImmutableStack<int> immutableStack2 = ImmutableStack.Create(1, 2, 3, 4, 5);
+    immutableStack.Equals(immutableStack2).Print();
+    immutableStack.SequenceEqual(immutableStack2).Print();
+}
+ImmutableSortedDictionary<int, StudentName> immutableSortedDictionary = Enumerable.Range(1, 10)
+    .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+    .ToImmutableSortedDictionary(x => x.ID, x => x);
+{
+    ImmutableSortedDictionary<int, StudentName> immutableSortedDictionary2 = Enumerable.Range(1, 10)
+        .Select(static i => new StudentName($"First-{i}", LastName: $"Last-{i}", ID: i))
+        .ToImmutableSortedDictionary(x => x.ID, x => x);
+
+    immutableSortedDictionary.Equals(immutableSortedDictionary2).Print();
+
+    _ = Task.Run(() =>
+    {
+        immutableSortedDictionary.Equals(immutableSortedDictionary2).ThreadSafePrint();
+        foreach (KeyValuePair<int, StudentName> item in immutableSortedDictionary)
+        {
+            Console.WriteLine(item);
+        }
+    });
+    _ = Task.Run(() =>
+    {
+        immutableSortedDictionary.SequenceEqual(immutableSortedDictionary2).ThreadSafePrint();
+        foreach (KeyValuePair<int, StudentName> item in immutableSortedDictionary2)
+        {
+            Console.WriteLine(item);
+        }
+    });
+}
+{
+    ImmutableList<int> immutableList = ImmutableList.Create(1, 2, 3, 4, 5);
+    _ = Task.Run(() =>
+    {
+        ImmutableInterlocked.Update(ref immutableList, t=>t.Add(7)).ThreadSafePrint();
+        ImmutableInterlocked.TryAdd(ref immutableDictionary, 11, new StudentName("First-11", "Last-11", 11)).ThreadSafePrint();
+    });
+
+    _ = Task.Run(() =>
+    {
+        immutableList.Equals(ImmutableList.Create(1, 2, 3, 4, 5)).ThreadSafePrint();
+        foreach (int item in immutableList)
+        {
+            Console.WriteLine(item);
+        }
+        ImmutableInterlocked.Update(ref immutableList, t => t.Remove(7)).ThreadSafePrint();
+
+    });
+}
+{
+    ImmutableArray<int> immutableArray = ImmutableCollectionsMarshal.AsImmutableArray([1, 2, 3, 4, 5]);
+    ImmutableCollectionsMarshal.AsImmutableArray(new Rope("").ToArray()).Print();
+    //reference type
+    int[] array = ImmutableCollectionsMarshal.AsArray(immutableArray2) ?? [];
+    //struct\
+    //slide window = buffer
+    Memory<int> memory = array.AsMemory();
 }
