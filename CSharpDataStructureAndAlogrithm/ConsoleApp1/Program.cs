@@ -4,6 +4,7 @@ using DataStructure.Models;
 using System.Collections;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using static DataStructure.BPlusTree;
 
@@ -385,4 +386,20 @@ ImmutableSortedDictionary<int, StudentName> immutableSortedDictionary = Enumerab
     //struct\
     //slide window = buffer
     Memory<int> memory = array.AsMemory();
+}
+{
+    Console.WriteLine("Enter a word:");
+    string word = Console.ReadLine()?.ToUpper() ?? string.Empty;
+
+    Console.WriteLine("\n1. Alphabet Position Factorial:");
+    CalculateAlphabetPositionFactorial(word);
+
+    Console.WriteLine("\n2. Permutational Factorial:");
+    CalculatePermutationalFactorial(word);
+
+    Console.WriteLine("\n3. Word Length Factorial:");
+    CalculateWordLengthFactorial(word);
+
+    Console.WriteLine("\n4. ASCII Factorial:");
+    CalculateASCIIFactorial(word);
 }

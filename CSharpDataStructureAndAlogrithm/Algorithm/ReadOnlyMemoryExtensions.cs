@@ -1,39 +1,34 @@
 ﻿using System.Buffers;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace Algorithm;
 
-public static partial class StringExtensions
+public static partial class ReadOnlyMemoryExtensions
 {
     public const int MaxAnsiCode = 255;
 
-    public static string ToSegmentString(this string s, int lineLength)
+    public static string ToSegments<T>(this ReadOnlyMemory<T> s, int lineLength)
     {
         int remainder = s.Length % lineLength;
         int times = (s.Length - remainder) / lineLength;
         return string.Join(Environment.NewLine, Enumerable.Range(0, times + 1).Select(i =>
         {
-            string ce = s.Substring(i * lineLength, Math.Min(s.Length - i * lineLength, lineLength));
+            string ce = s.Slice(i * lineLength, Math.Min(s.Length - i * lineLength, lineLength)).ToString();
             if (ce.Length < lineLength) ce = $"{ce}{new string(Enumerable.Repeat(' ', lineLength - ce.Length).ToArray())}";
             return new string(ce.Reverse().ToArray());
         }));
     }
 
-
-    public static char[][] ToCharArrays(this string s, int lineLength)
-        => s.ToCharArray(lineLength);
-
-    public static char[][] ToCharArray(this string s, int lineLength)
+    public static T[][] ToArrays<T>(this ReadOnlyMemory<T> s, int lineLength)
     {
         int remainder = s.Length % lineLength;
         int times = (s.Length - remainder) / lineLength;
-        char[][] result = new char[times + 1][];
+        T[][] result = new T[times + 1][];
         for (int i = 0; i < times; i++)
         {
-            result[i] = [.. s.Substring(i * lineLength, lineLength)];
+            result[i] = s.Slice(i * lineLength, lineLength).ToArray();
         }
-        result[times] = [.. s[^remainder..]];
+        result[times] = s.Span.Slice(times * lineLength, remainder).ToArray();
         return result;
     }
 
@@ -43,13 +38,20 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public static bool ContainsUnicodeCharacter(this string input)
+    public static bool ContainsUnicodeCharacter(this ReadOnlyMemory<char> s)
     {
-        return input.Any(c => c > MaxAnsiCode);
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (s.Span[i] > MaxAnsiCode) return true;
+        }
+        return false;
     }
 
-    public static int DamerauLevenshteinDistance(this string s1, string s2)
+
+    //ascii?
+    public static int DamerauLevenshteinDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
+        
         int len1 = s1.Length;
         int len2 = s2.Length;
         int[,] d = new int[len1 + 1, len2 + 1];
@@ -61,11 +63,11 @@ public static partial class StringExtensions
         {
             for (int j = 1; j <= len2; j++)
             {
-                int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
+                int cost = (s1.Span[i - 1] == s2.Span[j - 1]) ? 0 : 1;
 
                 d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
 
-                if (i > 1 && j > 1 && s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1])
+                if (i > 1 && j > 1 && s1.Span[i - 1] == s2.Span[j - 2] && s1.Span[i - 2] == s2.Span[j - 1])
                 {
                     d[i, j] = Math.Min(d[i, j], d[i - 2, j - 2] + cost);
                 }
@@ -75,10 +77,18 @@ public static partial class StringExtensions
         return d[len1, len2];
     }
 
-    public static double JaccardSimilarity(this string s1, string s2)
+    public static double JaccardSimilarity(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
-        HashSet<char> set1 = new HashSet<char>(s1);
-        HashSet<char> set2 = new HashSet<char>(s2);
+        HashSet<char> set1 = new HashSet<char>();
+        foreach (char c in s1.Span)
+        {
+            set1.Add(c);
+        }
+        HashSet<char> set2 = new HashSet<char>();
+        foreach (char c in s2.Span)
+        {
+            set2.Add(c);
+        }
 
         HashSet<char>? intersection = new HashSet<char>(set1);
         intersection.IntersectWith(set2);
@@ -95,7 +105,7 @@ public static partial class StringExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroDistance(this string s1, string s2)
+    public static double JaroDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
         int len1 = s1.Length;
         int len2 = s2.Length;
@@ -118,7 +128,7 @@ public static partial class StringExtensions
             for (int j = start; j < end; j++)
             {
                 if (s2Matches[j]) continue;
-                if (s1[i] != s2[j]) continue;
+                if (s1.Span[i] != s2.Span[j]) continue;
                 s1Matches[i] = true;
                 s2Matches[j] = true;
                 matches++;
@@ -133,7 +143,7 @@ public static partial class StringExtensions
         {
             if (!s1Matches[i]) continue;
             while (!s2Matches[k]) k++;
-            if (s1[i] != s2[k]) transpositions++;
+            if (s1.Span[i] != s2.Span[k]) transpositions++;
             k++;
         }
 
@@ -146,14 +156,14 @@ public static partial class StringExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroWinklerDistance(this string s1, string s2)
+    public static double JaroWinklerDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
         double jaroDistance = JaroDistance(s1, s2);
 
         int prefixLength = 0;
         for (int i = 0; i < Math.Min(s1.Length, s2.Length); i++)
         {
-            if (s1[i] == s2[i])
+            if (s1.Span[i] == s2.Span[i])
                 prefixLength++;
             else
                 break;
@@ -164,59 +174,64 @@ public static partial class StringExtensions
         return jaroDistance + (prefixLength * 0.1 * (1 - jaroDistance));
     }
 
-    public static string Factorial(this string s1, Keep decrement = Keep.First)
+    public static Span<T> Factorial<T>(this ReadOnlyMemory<T> s1, Keep decrement = Keep.First)
     {
-        if (string.IsNullOrWhiteSpace(s1)) return s1;
-
+        if (s1.IsEmpty) return [];
         int totalLength = s1.Length * (1 + s1.Length) / 2;
-        char[] result = new char[totalLength];
+        MemoryPool<T> memoryPool = MemoryPool<T>.Shared;
+        IMemoryOwner<T> memoryOwner = memoryPool.Rent(totalLength);
         int subStringLength = s1.Length;
-
-        if (decrement == Keep.First)
+        try
         {
-            int j = 0;
-            for (int i = 0; i < totalLength; i++)
+            if (decrement == Keep.First)
             {
-                result[i] = s1[j];
-                if (j == subStringLength - 1)
+                int j = 0;
+                for (int i = 0; i < totalLength; i++)
                 {
-                    subStringLength--;
-                    j = 0;
-                }
-                else
-                {
-                    j++;
+                    memoryOwner.Memory.Span[i] = s1.Span[j];
+                    if (j == subStringLength - 1)
+                    {
+                        subStringLength--;
+                        j = 0;
+                    }
+                    else
+                    {
+                        j++;
+                    }
                 }
             }
-        }
-        else if (decrement == Keep.Last)
-        {
-            // abc -> abcbcc
-            int j = 0;
-            int k = 0;
-            for (int i = 0; i < totalLength; i++)
+            else if (decrement == Keep.Last)
             {
-                result[i] = s1[j];
-                if (j == subStringLength - 1)
+                // abc -> abcbcc
+                int j = 0;
+                int k = 0;
+                for (int i = 0; i < totalLength; i++)
                 {
-                    // abc -> abcbcc
-                    k++;
-                    j = k;
-                }
-                else
-                {
-                    j++;
+                    memoryOwner.Memory.Span[i] = s1.Span[j];
+                    if (j == subStringLength - 1)
+                    {
+                        // abc -> abcbcc
+                        k++;
+                        j = k;
+                    }
+                    else
+                    {
+                        j++;
+                    }
                 }
             }
+            return memoryOwner.Memory.Span[..totalLength];
         }
-
-        return new string(result);
+        finally
+        {
+            memoryOwner.Dispose();
+        }
     }
 
-    public static BigInteger CalculateAlphabetPositionFactorial(this string word)
+    public static BigInteger CalculateAlphabetPositionFactorial(this ReadOnlyMemory<char> word)
     {
         BigInteger result = 1;
-        foreach (char c in word)
+        foreach (char c in word.Span)
         {
             int position = c - 'A' + 1;
             BigInteger factorial = position.Factorial();
@@ -236,7 +251,7 @@ public static partial class StringExtensions
     public static BigInteger CalculatePermutationalFactorial(this string word)
     {
         int length = word.Length;
-        Dictionary<char, int> letterCounts = 
+        Dictionary<char, int> letterCounts =
             word.GroupBy(c => c)
                 .ToDictionary(g => g.Key, g => g.Count());
 
