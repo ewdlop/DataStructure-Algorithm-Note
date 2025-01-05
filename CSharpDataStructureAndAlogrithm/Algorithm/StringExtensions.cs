@@ -1,6 +1,5 @@
 ﻿using System.Buffers;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace Algorithm;
 
@@ -241,7 +240,7 @@ public static partial class StringExtensions
                 .ToDictionary(g => g.Key, g => g.Count());
 
         BigInteger denominator = 1;
-        foreach (var count in letterCounts.Values)
+        foreach (int count in letterCounts.Values)
         {
             if (count > 1)
             {
@@ -281,5 +280,11 @@ public static partial class StringExtensions
         Console.WriteLine("(Result would be the product of these extremely large factorials)");
         Console.WriteLine("Note: Actual computation of such large factorials may exceed available memory");
         return result;
+    }
+
+    public static string Search(this string text, string pattern)
+    {
+        List<int> matches = KMPAlgorithm.Search(text, pattern);
+        return string.Join(", ", matches);
     }
 }

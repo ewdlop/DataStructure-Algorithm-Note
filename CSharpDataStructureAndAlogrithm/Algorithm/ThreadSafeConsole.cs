@@ -11,15 +11,15 @@ public static class ThreadSafeConsole
 {
     private static readonly object _lock = new object();
 
-    /// <summary>
-    /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
-    /// </summary>
-    /// <param name="message"></param>
-    public static void WriteLine(string message)
+    public static IEnumerable<string> Write(IEnumerable<string> messages)
     {
         lock (_lock)
         {
-            Console.WriteLine(message);
+            foreach (string message in messages)
+            {
+                Console.Write(message);
+                yield return message;
+            }
         }
     }
 
@@ -27,13 +27,61 @@ public static class ThreadSafeConsole
     /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
     /// </summary>
     /// <param name="message"></param>
-    public static void Write(string message)
+    public static string? Write<T>(T? message) where T : notnull
+    {
+        lock (_lock)
+        {
+            string? output = message?.ToString();
+            Console.Write(output);
+            return output;
+        }
+
+    }
+
+    /// <summary>
+    /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
+    /// </summary>
+    /// <param name="message"></param>
+    public static string Write(string message)
     {
         lock (_lock)
         {
             Console.Write(message);
+            return message;
         }
     }
+
+    public static string WriteLine<T>(IEnumerable<T> messages, string delimiter = "")
+    {
+        lock (_lock)
+        {
+            return string.Format(string.Join(delimiter, messages));
+        }
+    }
+
+    public static string? WriteLine<T>(T? message) where T : notnull
+    {
+        lock (_lock)
+        {
+            string? output = message?.ToString();
+            Console.WriteLine(output);
+            return output;
+        }
+    }
+
+    /// <summary>
+    /// Console.WriteLine() and Console.Write() are thread safe, but they can still interleave output
+    /// </summary>
+    /// <param name="message"></param>
+    public static string WriteLine(string message)
+    {
+        lock (_lock)
+        {
+            Console.WriteLine(message);
+            return message;
+        }
+    }
+
     public static string? ReadLine()
     {
         lock (_lock)

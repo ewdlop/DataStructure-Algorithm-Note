@@ -298,3 +298,8 @@ public static partial class ReadOnlyMemoryExtensions
         return result;
     }
 }
+
+public static partial class ReadOnlyMemoryExtensions
+{
+
+}
