@@ -2,7 +2,7 @@
 
 namespace Algorithm;
 
-public static class IntegerExtension
+public static partial class IntegerExtension
 {
     public static int GreatestCommonDivisor(this int a, int b)
     {

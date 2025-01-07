@@ -2,7 +2,7 @@
 
 namespace Algorithm;
 
-public static class IListExtensions
+public static partial class IListExtensions
 {
     public static void Swap<T>(this IList<T> list, int index1, int index2)
     {

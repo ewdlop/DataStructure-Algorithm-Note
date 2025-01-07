@@ -1,6 +1,6 @@
 ﻿namespace Algorithm;
 
-public static class KMPAlgorithm
+public static partial class KMPAlgorithm
 {
     // Compute the Longest Proper Prefix which is also Suffix (LPS) array
     public static int[] ComputeLPSArray(this string pattern)

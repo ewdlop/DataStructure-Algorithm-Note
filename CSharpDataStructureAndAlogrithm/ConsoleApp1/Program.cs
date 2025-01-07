@@ -391,15 +391,11 @@ ImmutableSortedDictionary<int, StudentName> immutableSortedDictionary = Enumerab
     Console.WriteLine("Enter a word:");
     string word = Console.ReadLine()?.ToUpper() ?? string.Empty;
 
-    Console.WriteLine("\n1. Alphabet Position Factorial:");
-    CalculateAlphabetPositionFactorial(word);
+    Console.WriteLine($"\n1. Alphabet Position Factorial: {word.CalculateAlphabetPositionFactorial()}");
 
-    Console.WriteLine("\n2. Permutational Factorial:");
-    CalculatePermutationalFactorial(word);
+    Console.WriteLine($"\n2. Permutational Factorial: {StringExtensions.CalculatePermutationalFactorial(word)}");
 
-    Console.WriteLine("\n3. Word Length Factorial:");
-    CalculateWordLengthFactorial(word);
+    Console.WriteLine($"\n3. Word Length Factorial: {StringExtensions.CalculateWordLengthFactorial(word)}");
 
-    Console.WriteLine("\n4. ASCII Factorial:");
-    CalculateASCIIFactorial(word);
+    Console.WriteLine($"\n4. ASCII Factorial: {StringExtensions.CalculateASCIIFactorial(word)}");
 }

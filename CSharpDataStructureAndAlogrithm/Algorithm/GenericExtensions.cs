@@ -1,6 +1,6 @@
 ﻿namespace Algorithm;
 
-public static class GenericExtensions
+public static partial class GenericExtensions
 {
     public enum PrintType
     {
@@ -34,8 +34,8 @@ public static class GenericExtensions
         {
             yield return (obj, printType, writeType) switch
             {
-                (IEnumerable<object> enumerable, PrintType.ThreadSafeConsole, WriteType.Write) => ThreadSafeConsole.WriteLine(enumerable, prelimiter),
-                (IEnumerable<object> enumerable, PrintType.ThreadSafeConsole, WriteType.WriteLine) => ThreadSafeConsole.WriteLine(enumerable, prelimiter),
+                (IEnumerable<object> enumerable, PrintType.ThreadSafeConsole, WriteType.Write) => ThreadSafeConsole.WriteLine(enumerable, delimiter),
+                (IEnumerable<object> enumerable, PrintType.ThreadSafeConsole, WriteType.WriteLine) => ThreadSafeConsole.WriteLine(enumerable, delimiter),
                 (object x, PrintType.ThreadSafeConsole, WriteType.Write) => ThreadSafeConsole.Write(x),
                 (object x, PrintType.ThreadSafeConsole, WriteType.WriteLine) => ThreadSafeConsole.WriteLine(x),
                 _ => string.Empty

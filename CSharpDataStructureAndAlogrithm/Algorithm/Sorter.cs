@@ -2,7 +2,7 @@
 
 namespace Algorithm;
 
-public static class Sorter
+public static partial class Sorter
 {
     public static void BubbleSort<T>(this IList<T>? list,
         Func<T, T, int>? comparer = null,

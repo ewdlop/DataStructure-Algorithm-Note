@@ -2,7 +2,7 @@
 
 namespace Algorithm;
 
-public static class IEnumerableExtensions
+public static partial class IEnumerableExtensions
 {
     public static IEnumerable<T> AsBubbleSortEnumerable<T>(
         this IEnumerable<T> enumerable, 
