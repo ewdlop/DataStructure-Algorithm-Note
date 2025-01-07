@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Text;
+using System.Threading;
 
 namespace Algorithm;
 
@@ -143,7 +144,7 @@ public static class ThreadSafeConsole
     }
 
 
-    public static Task WriteLineAsync(string message)
+    public static Task WriteLineAsync(string message, CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -151,10 +152,10 @@ public static class ThreadSafeConsole
             {
                 Console.WriteLine(message);
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task WriteAsync(string message)
+    public static Task WriteAsync(string message, CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -162,10 +163,10 @@ public static class ThreadSafeConsole
             {
                 Console.Write(message);
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task<string?> ReadLineAsync()
+    public static Task<string?> ReadLineAsync(CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -173,10 +174,10 @@ public static class ThreadSafeConsole
             {
                 return Console.ReadLine();
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task<ConsoleKeyInfo> ReadKeyAsync()
+    public static Task<ConsoleKeyInfo> ReadKeyAsync(CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -184,10 +185,10 @@ public static class ThreadSafeConsole
             {
                 return Console.ReadKey();
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task ClearAsync()
+    public static Task ClearAsync(CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -195,10 +196,10 @@ public static class ThreadSafeConsole
             {
                 Console.Clear();
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task SetCursorPositionAsync(int left, int top)
+    public static Task SetCursorPositionAsync(int left, int top, CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -206,10 +207,10 @@ public static class ThreadSafeConsole
             {
                 Console.SetCursorPosition(left, top);
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task WriteUnicodeAsync(string message, bool keep = false)
+    public static Task WriteUnicodeAsync(string message, bool keep = false, CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -220,10 +221,10 @@ public static class ThreadSafeConsole
                 Console.Write(message);
                 if (!keep) Console.OutputEncoding = previousEncoding;
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task SetCursorPositionAsync(int left, int top, string message)
+    public static Task SetCursorPositionAsync(int left, int top, string message, CancellationToken cancellationToken = default)
     {
         return Task.Run(() =>
         {
@@ -232,10 +233,10 @@ public static class ThreadSafeConsole
                 Console.SetCursorPosition(left, top);
                 Console.Write(message);
             }
-        });
+        }, cancellationToken);
     }
 
-    public static Task SetCursorPositionAsync(int left, int top, string message, params object[] args)
+    public static Task SetCursorPositionAsync(int left, int top, string message, CancellationToken cancellationToken = default, params object[] args)
     {
         return Task.Run(() =>
         {
@@ -244,6 +245,6 @@ public static class ThreadSafeConsole
                 Console.SetCursorPosition(left, top);
                 Console.Write(message, args);
             }
-        });
+        }, cancellationToken);
     }
 }

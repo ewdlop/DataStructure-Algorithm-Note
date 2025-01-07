@@ -63,7 +63,7 @@ public class FileTree
     public void AddChild(string parentFilePath, string childData)
     {
         var parentNode = LoadNode(parentFilePath);
-        var childFilePath = Path.Combine(directoryPath, Guid.NewGuid().ToString() + ".bin");
+        var childFilePath = Path.Combine(directoryPath, $"{Guid.NewGuid()}.bin");
         parentNode.Children.Add(childFilePath);
         SaveNode(parentNode, parentFilePath);
         SaveNode(new TreeNode(childData), childFilePath);
