@@ -8,8 +8,8 @@ namespace Algorithm;
 /// <typeparam name="T"></typeparam>
 public static partial class ThreadSafeHelper<T>
 {
-    private static readonly Lazy<ConcurrentDictionary<IList<T>, (SemaphoreSlim Semaphore, int Count)>> _lazySemaphoreSlimDictionary = new();
-
+    private static readonly Lazy<ConcurrentDictionary<IEnumerable<T>, (SemaphoreSlim Semaphore, int Count)>> _lazySemaphoreSlimDictionary = new();
+    private static ConcurrentDictionary<IEnumerable<T>, (SemaphoreSlim Semaphore, int Count)> SemaphoreSlimDictionary => _lazySemaphoreSlimDictionary.Value;
     /// <summary>
     /// Adds an item to the list in a thread safe manner
     /// </summary>
@@ -17,13 +17,12 @@ public static partial class ThreadSafeHelper<T>
     /// <param name="item"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<bool> TryAddAsync(IList<T> list, T item, CancellationToken cancellationToken = default)
+    public static async Task<bool> TryAddAsync(IEnumerable<T> enumerable, T item, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(list);
-        ConcurrentDictionary<IList<T>, (SemaphoreSlim Semaphore, int Count)>? dictionary = _lazySemaphoreSlimDictionary.Value;
+        ArgumentNullException.ThrowIfNull(enumerable);
 
-        (SemaphoreSlim entrySemaphore, int count) = dictionary.AddOrUpdate(
-            list,
+        (SemaphoreSlim entrySemaphore, int count) = SemaphoreSlimDictionary.AddOrUpdate(
+            enumerable,
             key => (new SemaphoreSlim(1, 1), 1),
             (key, oldValue) => (oldValue.Semaphore, oldValue.Count + 1)
         );
@@ -31,7 +30,11 @@ public static partial class ThreadSafeHelper<T>
         try
         {
             await entrySemaphore.WaitAsync(cancellationToken);
-            list.Add(item);
+            if(enumerable is IList<T> list)
+            {
+                list.Add(item);
+                return true;
+            }
             return true;
         }
 
@@ -50,8 +53,8 @@ public static partial class ThreadSafeHelper<T>
         {
             entrySemaphore.Release();
 
-            dictionary.AddOrUpdate(
-                list,
+            SemaphoreSlimDictionary.AddOrUpdate(
+                enumerable,
                 key => (entrySemaphore, count),
                 (key,oldValue) =>
                 {
@@ -64,14 +67,14 @@ public static partial class ThreadSafeHelper<T>
                 }
             );
 
-            if (dictionary.TryGetValue(list, out (SemaphoreSlim Semaphore, int Count) updatedEntry) && updatedEntry.Count == 0)
+            if (SemaphoreSlimDictionary.TryGetValue(enumerable, out (SemaphoreSlim Semaphore, int Count) updatedEntry) && updatedEntry.Count == 0)
             {
-                dictionary.TryRemove(list, out _);
+                SemaphoreSlimDictionary.TryRemove(enumerable, out _);
             }
             else
             {
-                dictionary.AddOrUpdate(
-                    list,
+                SemaphoreSlimDictionary.AddOrUpdate(
+                    enumerable,
                     key => (entrySemaphore, count),
                     (key, oldValue) => (oldValue.Semaphore, oldValue.Count - 1)
                 );
@@ -87,13 +90,12 @@ public static partial class ThreadSafeHelper<T>
     /// <param name="item"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<bool> TryInsertAsync(IList<T> list, int index, T item, CancellationToken cancellationToken = default)
+    public static async Task<bool> TryInsertAsync(IEnumerable<T> enumerable, int index, T item, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(list);
-        ConcurrentDictionary<IList<T>, (SemaphoreSlim Semaphore, int Count)>? dictionary = _lazySemaphoreSlimDictionary.Value;
+        ArgumentNullException.ThrowIfNull(enumerable);
 
-        (SemaphoreSlim entrySemaphore, int count) = dictionary.AddOrUpdate(
-            list,
+        (SemaphoreSlim entrySemaphore, int count) = SemaphoreSlimDictionary.AddOrUpdate(
+            enumerable,
             key => (new SemaphoreSlim(1, 1), 1),
             (key, oldValue) => (oldValue.Semaphore, oldValue.Count + 1)
         );
@@ -101,7 +103,11 @@ public static partial class ThreadSafeHelper<T>
         try
         {
             await entrySemaphore.WaitAsync(cancellationToken);
-            list.Insert(index, item);
+            if(enumerable is IList<T> list)
+            {
+                list.Insert(index, item);
+                return true;
+            }
             return true;
         }
         catch (Exception ex)
@@ -119,8 +125,8 @@ public static partial class ThreadSafeHelper<T>
         {
             entrySemaphore.Release();
 
-            dictionary.AddOrUpdate(
-                list,
+            SemaphoreSlimDictionary.AddOrUpdate(
+                enumerable,
                 key => (entrySemaphore, count),
                 (key, oldValue) =>
                 {
@@ -133,14 +139,14 @@ public static partial class ThreadSafeHelper<T>
                 }
             );
 
-            if (dictionary.TryGetValue(list, out (SemaphoreSlim Semaphore, int Count) updatedEntry) && updatedEntry.Count == 0)
+            if (SemaphoreSlimDictionary.TryGetValue(enumerable, out (SemaphoreSlim Semaphore, int Count) updatedEntry) && updatedEntry.Count == 0)
             {
-                dictionary.TryRemove(list, out _);
+                SemaphoreSlimDictionary.TryRemove(enumerable, out _);
             }
             else
             {
-                dictionary.AddOrUpdate(
-                    list,
+                SemaphoreSlimDictionary.AddOrUpdate(
+                    enumerable,
                     key => (entrySemaphore, count),
                     (key, oldValue) => (oldValue.Semaphore, oldValue.Count - 1)
                 );
