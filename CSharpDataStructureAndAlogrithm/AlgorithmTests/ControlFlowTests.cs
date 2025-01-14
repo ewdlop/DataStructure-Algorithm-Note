@@ -1,14 +1,14 @@
 ﻿namespace AlgorithmTests;
 
 [TestClass()]
-public class FlowControlTests : TestBase
+public class ControlFlowTests : TestBase
 {
     [TestMethod()]
-    public virtual void RunTest()
+    public void RunTest()
     {
         while (true)
         {
-            if(Random.Shared.Next(0, 九十六) < 四十八)
+            if (Random.Shared.Next(0, 九十六) < 四十八)
             {
                 Assert.Fail();
             }
@@ -16,7 +16,7 @@ public class FlowControlTests : TestBase
     }
 
     [TestMethod()]
-    public virtual void RunTest2()
+    public void RunTest2()
     {
         for (int i = 0; i < 128; i++)
         {
@@ -25,8 +25,8 @@ public class FlowControlTests : TestBase
     }
 
     [TestMethod()]
-    public virtual void RunTest3()
+    public void RunTest3()
     {
-        Assert.Inconclusive();
+
     }
 }

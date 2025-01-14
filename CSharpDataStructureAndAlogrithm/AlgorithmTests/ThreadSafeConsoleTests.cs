@@ -1,7 +1,7 @@
 ﻿namespace AlgorithmTests;
 
 [TestClass()]
-public class ThreadSafeConsoleTests
+public class ThreadSafeConsoleTests : TestBase
 {
     [TestMethod()]
     public void WriteLineTest()
