@@ -53,4 +53,23 @@ public static partial class IListExtensions
         }
         return (min, max);
     }
+
+    public static List<T> QuickSort<T>(this IList<T> list) where T : IComparable<T>
+    {
+        ArgumentNullException.ThrowIfNull(list);
+
+        // Base case: list of length 0 or 1 is already sorted
+        if (list.Count <= 1)
+            return [.. list];
+
+        // Choosing pivot (first element in this case)
+        T pivot = list[0];
+
+        // Partitioning into two sub-lists
+        IEnumerable<T> lessThanPivot = list.Where(x => x.CompareTo(pivot) < 0);
+        IEnumerable<T> greaterThanPivot = list.Where(x => x.CompareTo(pivot) > 0);
+
+        // Recursively sort and combine the results
+        return [.. lessThanPivot.AsQuickSortEnumerable(), .. new List<T> { pivot }, .. greaterThanPivot.AsQuickSortEnumerable()];
+    }
 }

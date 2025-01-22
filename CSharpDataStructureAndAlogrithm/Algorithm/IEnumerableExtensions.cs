@@ -12,7 +12,7 @@ public static partial class IEnumerableExtensions
         Action<T,T>? onAfterCompare = null)
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
         comparer ??= Comparer<T>.Default.Compare;
 
@@ -48,7 +48,7 @@ public static partial class IEnumerableExtensions
         Action<T, T>? onAfterCompare = null)
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
         comparer ??= Comparer<T>.Default;
 
@@ -83,7 +83,7 @@ public static partial class IEnumerableExtensions
         Action<T, T>? onAfterCompare = null) where T : IComparisonOperators<T, T, bool>
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
 
         for (int i = 0; i < list.Count - 1; i++)
@@ -116,7 +116,7 @@ public static partial class IEnumerableExtensions
         Action<T, T>? onAfterCompare = null)
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
         comparer ??= Comparer<T>.Default.Compare;
 
@@ -153,7 +153,7 @@ public static partial class IEnumerableExtensions
         Action<T, T>? onAfterCompare = null)
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
         comparer ??= Comparer<T>.Default;
 
@@ -189,7 +189,7 @@ public static partial class IEnumerableExtensions
         Action<T, T>? onAfterCompare = null) where T : IComparisonOperators<T, T, bool>
     {
         ArgumentNullException.ThrowIfNull(enumerable);
-        IList<T> list = new List<T>(enumerable); //shallow copy
+        List<T> list = new List<T>(enumerable); //shallow copy
         int n = list.Count;
 
         for (int i = 0; i < list.Count - 1; i++)
@@ -231,7 +231,7 @@ public static partial class IEnumerableExtensions
     {
         if (count == 0)
         {
-            yield break;
+            yield return enumerable;
         }
 
         if ((count ??= enumerable.Count()) == 1)
@@ -281,5 +281,51 @@ public static partial class IEnumerableExtensions
         }
 
         return GetPermutationsInternal(enumerable, count ?? enumerable.Count());
+    }
+
+    public static IEnumerable<T?> AsQuickSortEnumerable<T>(this IEnumerable<T?>? enumerable) where T: IComparable<T>
+    {
+        ArgumentNullException.ThrowIfNull(enumerable);
+
+        // Base case: enumerable of length 0 or 1 is already sorted
+        if (enumerable.Count() <= 1)
+        {
+            return enumerable;
+        }
+
+        // Choosing pivot (first element in this case)
+        T? pivot = enumerable.First();
+
+        // Partitioning into two sub-enumerables
+        IEnumerable<T?> lessThanPivot = enumerable.Where(x => x?.CompareTo(pivot) < 0);
+        IEnumerable<T?> greaterThanPivot = enumerable.Where(x => x?.CompareTo(pivot) > 0);
+
+        // Recursively sort and combine the results
+
+        return [.. AsQuickSortEnumerable(lessThanPivot), .. new T?[] { pivot }, .. AsQuickSortEnumerable(greaterThanPivot)];
+    }
+
+    public static IEnumerable<IEnumerable<T?>> AsQuickSortingEnumerable<T>(this IEnumerable<T?>? enumerable) where T : IComparable<T>
+    {
+        ArgumentNullException.ThrowIfNull(enumerable);
+
+        // Base case: enumerable of length 0 or 1 is already sorted
+        if (!enumerable.Any())
+        {
+            yield return enumerable;
+        }
+
+        // Choosing pivot (first element in this case)
+        T? pivot = enumerable.FirstOrDefault();
+
+        // Partitioning into two sub-enumerables
+        IEnumerable<T?> lessThanPivot = enumerable.Where(x => x?.CompareTo(pivot) < 0);
+        IEnumerable<T?> greaterThanPivot= enumerable.Where(x => x?.CompareTo(pivot) > 0);
+
+        // Recursively sort and combine the results
+
+        yield return AsQuickSortEnumerable(lessThanPivot);
+        yield return [pivot];
+        yield return AsQuickSortEnumerable(greaterThanPivot);
     }
 }
