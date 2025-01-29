@@ -43,7 +43,7 @@ public class RTree
             return node;
         }
 
-        RTreeNode bestChild = null;
+        RTreeNode? bestChild = null;
         double minAreaIncrease = double.MaxValue;
 
         foreach (RTreeNode child in node.Children)
@@ -82,7 +82,7 @@ public class RTree
         }
         else
         {
-            RTreeNode parent = FindParent(root, node);
+            RTreeNode? parent = FindParent(root, node) ?? throw new InvalidOperationException("Parent not found");
             parent.Children.Add(newNode);
             if (parent.Children.Count > maxEntries)
             {
@@ -91,7 +91,7 @@ public class RTree
         }
     }
 
-    private RTreeNode FindParent(RTreeNode root, RTreeNode node)
+    private RTreeNode? FindParent(RTreeNode root, RTreeNode node)
     {
         foreach (RTreeNode child in root.Children)
         {
@@ -101,7 +101,7 @@ public class RTree
             }
             else
             {
-                RTreeNode parent = FindParent(child, node);
+                RTreeNode? parent = FindParent(child, node);
                 if (parent != null)
                 {
                     return parent;
@@ -118,7 +118,7 @@ public class RTree
         return result;
     }
 
-    private void Search(RTreeNode node, Rectangle query, List<Rectangle> result)
+    private static void Search(RTreeNode node, Rectangle query, List<Rectangle> result)
     {
         foreach (Rectangle entry in node.Entries)
         {

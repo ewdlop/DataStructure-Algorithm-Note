@@ -7,7 +7,7 @@ public class SplayTree<T> where T : IComparable<T>
     public class SplayTreeNode<T> where T : IComparable<T>
     {
         public T Value;
-        public SplayTreeNode<T> Left, Right;
+        public SplayTreeNode<T>? Left, Right;
 
         public SplayTreeNode(T value)
         {
@@ -16,30 +16,36 @@ public class SplayTree<T> where T : IComparable<T>
         }
     }
 
-    private SplayTreeNode<T> root;
+    private SplayTreeNode<T>? root;
 
     public SplayTree()
     {
         root = null;
     }
 
-    private SplayTreeNode<T> RightRotate(SplayTreeNode<T> x)
+    private static SplayTreeNode<T>? RightRotate(SplayTreeNode<T> x)
     {
-        SplayTreeNode<T> y = x.Left;
-        x.Left = y.Right;
-        y.Right = x;
+        SplayTreeNode<T>? y = x.Left;
+        x.Left = y?.Right;
+        if(y != null)
+        {
+            y.Right = x;
+        }
         return y;
     }
 
-    private SplayTreeNode<T> LeftRotate(SplayTreeNode<T> x)
+    private static SplayTreeNode<T>? LeftRotate(SplayTreeNode<T> x)
     {
-        SplayTreeNode<T> y = x.Right;
-        x.Right = y.Left;
-        y.Left = x;
+        SplayTreeNode<T>? y = x.Right;
+        x.Right = y?.Left;
+        if (y != null)
+        {
+            y.Left = x;
+        }
         return y;
     }
 
-    private SplayTreeNode<T> Splay(SplayTreeNode<T> root, T key)
+    private static SplayTreeNode<T>? Splay(SplayTreeNode<T>? root, T key)
     {
         if (root == null || root.Value.CompareTo(key) == 0)
             return root;
@@ -60,7 +66,7 @@ public class SplayTree<T> where T : IComparable<T>
                     root.Left = LeftRotate(root.Left);
             }
 
-            return root.Left == null ? root : RightRotate(root);
+            return root?.Left == null ? root : RightRotate(root);
         }
         else
         {
@@ -78,7 +84,7 @@ public class SplayTree<T> where T : IComparable<T>
                 root = LeftRotate(root);
             }
 
-            return root.Right == null ? root : LeftRotate(root);
+            return root?.Right == null ? root : LeftRotate(root);
         }
     }
 
@@ -118,7 +124,7 @@ public class SplayTree<T> where T : IComparable<T>
 
         root = Splay(root, key);
 
-        if (root.Value.CompareTo(key) != 0) return;
+        if (root?.Value.CompareTo(key) != 0) return;
 
         if (root.Left == null)
         {
@@ -126,7 +132,7 @@ public class SplayTree<T> where T : IComparable<T>
         }
         else
         {
-            SplayTreeNode<T> temp = root.Right;
+            SplayTreeNode<T>? temp = root.Right;
             root = root.Left;
             Splay(root, key);
             root.Right = temp;
@@ -139,13 +145,13 @@ public class SplayTree<T> where T : IComparable<T>
         return root != null && root.Value.CompareTo(key) == 0;
     }
 
-    public void InOrderTraversal(SplayTreeNode<T> node)
+    public void InOrderTraversal(SplayTreeNode<T>? node)
     {
         if (node != null)
         {
-            InOrderTraversal(node.Left);
-            Console.Write(node.Value + " ");
-            InOrderTraversal(node.Right);
+            InOrderTraversal(node?.Left);
+            Console.Write(node?.Value.ToString() + " ");
+            InOrderTraversal(node?.Right);
         }
     }
 
