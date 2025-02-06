@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Algorithm;
@@ -178,7 +179,7 @@ public static partial class Sorter
     }
 
     // Function to read a chunk of data
-    public static async IAsyncEnumerable<IMemoryOwner<int?>> GetReadChunkAsyncEnumerable(StreamReader reader, int size, CancellationToken cancellationToken = default)
+    public static async IAsyncEnumerable<IMemoryOwner<int?>> GetReadChunkAsyncEnumerable(StreamReader reader, int size, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(reader);
 
@@ -253,7 +254,7 @@ public static partial class Sorter
     }
 
     // Function to write a chunk of data to a temporary file
-    public static async IAsyncEnumerable<Task> GetWriteChunkAsyncEnumerable(string filePath, int[] buffer, int count, CancellationToken cancellationToken = default)
+    public static async IAsyncEnumerable<Task> GetWriteChunkAsyncEnumerable(string filePath, int[] buffer, int count, [EnumeratorCancellation]CancellationToken cancellationToken = default)
     {
         await using (StreamWriter writer = new StreamWriter(filePath))
         {
