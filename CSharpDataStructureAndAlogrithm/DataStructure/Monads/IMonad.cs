@@ -7,3 +7,5 @@ public interface IMonad<T>
     public abstract T? GetValueOrDefault(T? defaultValue);
     public abstract bool TryGetValue(out T? value);
 }
+
+public interface IMonad : IMonad<Object>;
