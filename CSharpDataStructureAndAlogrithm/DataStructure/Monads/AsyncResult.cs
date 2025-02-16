@@ -3,7 +3,6 @@ using DataStructure.Monads;
 
 namespace DataStructure.Monads
 {
-
     public class AsyncResult<T> : AsyncMonadBase<T>
     {
         private readonly Task<Result<T?>> _task;
@@ -20,28 +19,28 @@ namespace DataStructure.Monads
             => new(Task.FromResult(result));
 
         public virtual async Task<Result<TResult?>> BindAsync<TResult>(
-            Func<T?, Task<Result<TResult?>>> func)
+            Func<T?, Task<Result<TResult?>>> func, CancellationToken cancellation = default)
         {
-            var result = await _task;
+            var result = await _task.WaitAsync(cancellation);
+            return result.IsSuccess
+                ? await func(result.Value).WaitAsync(cancellation)
+                : Result<TResult?>.Failure(result.Error);
+        }
+
+        public override async Task<IMonad<TResult?>> BindAsync<TResult>(Func<T?, Task<IMonad<TResult?>>> func, CancellationToken cancellation = default) where TResult : default
+        {
+            var result = await _task.WaitAsync(cancellation);
             return result.IsSuccess
                 ? await func(result.Value)
                 : Result<TResult?>.Failure(result.Error);
         }
 
-        public override async Task<IMonad<TResult?>> BindAsync<TResult>(Func<T?, Task<IMonad<TResult?>>> func) where TResult : default
+        public override async Task<IMonad<TResult?>> MapAsync<TResult>(Func<T?, Task<TResult?>> func, CancellationToken cancellation = default) where TResult : default
         {
-            var result = await _task;
-            return result.IsSuccess
-                ? await func(result.Value)
-                : Result<TResult?>.Failure(result.Error);
-        }
-
-        public override async Task<IMonad<TResult?>> MapAsync<TResult>(Func<T?, Task<TResult?>> func) where TResult : default
-        {
-            Result<T?> result = await _task;
+            Result<T?> result = await _task.WaitAsync(cancellation);
             if (result.IsSuccess)
             {
-                TResult? mappedValue = await func(result.Value);
+                TResult? mappedValue = await func(result.Value).WaitAsync(cancellation);
                 return Result<TResult?>.Success(mappedValue);
             }
             return Result<TResult?>.Failure(result.Error);
@@ -80,11 +79,11 @@ public class AsyncResult<T>
         => new(Task.FromResult(result));
 
     public async Task<Result<TResult?>> BindAsync<TResult>(
-        Func<T, Task<Result<TResult?>>> func)
+        Func<T, Task<Result<TResult?>>> func, CancellationToken cancellationToken = default)
     {
-        var result = await _task;
+        var result = await _task.WaitAsync(cancellationToken);
         return result.IsSuccess
-            ? await func(result.Value)
+            ? await func(result.Value).WaitAsync(cancellationToken)
             : Result<TResult?>.Failure(result.Error);
     }
 }
