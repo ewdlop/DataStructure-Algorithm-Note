@@ -1,4 +1,6 @@
-﻿namespace Algorithm;
+﻿using System.Runtime.CompilerServices;
+
+namespace Algorithm;
 
 //public record Car(string Brand, string Model) : ICar<Car>
 //{
@@ -18,5 +20,17 @@
 
 public class 假算法
 {
-    
+    public static IEnumerable<string> RunTimer(CancellationToken token = default)
+    {
+        bool _isTicking = false;
+
+        while (!token.IsCancellationRequested)
+        {
+            // Atomic toggle acting as a clock pulse
+            if (!Interlocked.Exchange(ref _isTicking, !_isTicking))
+            {
+                yield return $"{DateTime.UtcNow:HH:mm:ss.fff}";
+            }
+        }
+    }
 }
