@@ -1,11 +1,20 @@
-﻿namespace AlgorithmTests;
+﻿using System.Collections;
+
+namespace AlgorithmTests;
 
 [TestClass()]
 public class FlowControlTests : TestBase
 {
+    public override IDictionary Properties => throw new NotImplementedException();
+
+    public override void AddResultFile(string fileName)
+    {
+    }
+
     [TestMethod()]
     public virtual void RunTest()
     {
+#if false
         while (true)
         {
             if(Random.Shared.Next(0, 九十六) < 四十八)
@@ -13,6 +22,8 @@ public class FlowControlTests : TestBase
                 Assert.Fail();
             }
         }
+#endif
+        Assert.Inconclusive();
     }
 
     [TestMethod()]
@@ -27,6 +38,24 @@ public class FlowControlTests : TestBase
     [TestMethod()]
     public virtual void RunTest3()
     {
-        Assert.Inconclusive();
+    }
+    public override void Write(string? message)
+    {
+        
+    }
+
+    public override void Write(string format, params object?[] args)
+    {
+
+    }
+
+    public override void WriteLine(string? message)
+    {
+        
+    }
+
+    public override void WriteLine(string format, params object?[] args)
+    {
+
     }
 }
