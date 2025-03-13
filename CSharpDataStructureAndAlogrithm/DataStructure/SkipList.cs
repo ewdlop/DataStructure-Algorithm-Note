@@ -63,7 +63,7 @@ public class SkipList<T> where T : IComparable<T>
     private int RandomLevel()
     {
         int level = 1;
-        while (random.NextSystem.Double() < 0.5 && level < maxLevel)
+        while (random.NextDouble() < 0.5 && level < maxLevel)
         {
             level++;
         }
