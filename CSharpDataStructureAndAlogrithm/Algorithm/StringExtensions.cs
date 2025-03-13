@@ -74,7 +74,7 @@ public static partial class StringExtensions
         return d[len1, len2];
     }
 
-    public static double JaccardSimilarity(this string s1, string s2)
+    public static System.Double JaccardSimilarity(this string s1, string s2)
     {
         HashSet<char> set1 = new HashSet<char>(s1);
         HashSet<char> set2 = new HashSet<char>(s2);
@@ -85,7 +85,7 @@ public static partial class StringExtensions
         HashSet<char> union = new HashSet<char>(set1);
         union.UnionWith(set2);
 
-        return (double)intersection.Count / union.Count;
+        return (System.Double)intersection.Count / union.Count;
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public static partial class StringExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroDistance(this string s1, string s2)
+    public static System.Double JaroDistance(this string s1, string s2)
     {
         int len1 = s1.Length;
         int len2 = s2.Length;
@@ -136,7 +136,7 @@ public static partial class StringExtensions
             k++;
         }
 
-        return ((matches / (double)len1) + (matches / (double)len2) + ((matches - transpositions / 2.0) / matches)) / 3.0;
+        return ((matches / (System.Double)len1) + (matches / (System.Double)len2) + ((matches - transpositions / 2.0) / matches)) / 3.0;
     }
 
     /// <summary>
@@ -145,9 +145,9 @@ public static partial class StringExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroWinklerDistance(this string s1, string s2)
+    public static System.Double JaroWinklerDistance(this string s1, string s2)
     {
-        double jaroDistance = JaroDistance(s1, s2);
+        System.Double jaroDistance = JaroDistance(s1, s2);
 
         int prefixLength = 0;
         for (int i = 0; i < Math.Min(s1.Length, s2.Length); i++)

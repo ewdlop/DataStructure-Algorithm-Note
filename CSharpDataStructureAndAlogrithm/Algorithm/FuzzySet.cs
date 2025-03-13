@@ -10,7 +10,7 @@ namespace Algorithm;
 /// </summary>
 /// <typeparam name="T1"></typeparam>
 /// <typeparam name="T2"></typeparam>
-public record FuzzySet<T1, T2> where T1 : INumber<T1>, IMultiplyOperators<T1, T2, T1>
+public abstract record FuzzySet<T1, T2> where T1 : INumber<T1>, IMultiplyOperators<T1, T2, T1>
     where T2 : struct, INumber<T2>, IMultiplyOperators<T2,T1,T1>
 {
     public required FrozenSet<T1> BaseSet { get; init; }

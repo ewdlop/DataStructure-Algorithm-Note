@@ -24,7 +24,7 @@ public class BloomFilter
     {
         byte[] baseHash = _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(item));
 
-        // Create multiple hash functions using the double hashing technique
+        // Create multiple hash functions using the System.Double hashing technique
         for (int i = 0; i < _hashFunctions; i++)
         {
             int hashValue = Math.Abs((BitConverter.ToInt32(baseHash, 0) + i * BitConverter.ToInt32(baseHash, 4)) % _size);

@@ -16,12 +16,12 @@ public class ControlFlowTests : TestBase, IDisposable
     [TestMethod()]
     public void RunTest()
     {
-        //Mental model: Random.Shared.NextDouble() is [0, 1)
-        //double.Epsilon is the smallest positive double value that is significant?
+        //Mental model: Random.Shared.NextSystem.Double() is [0, 1)
+        //System.Double.Epsilon is the smallest positive System.Double value that is significant?
 
-        //Math.Abs(1.0 - (1.0 + double.Epsilon) * Random.Shared.NextDouble()???
+        //Math.Abs(1.0 - (1.0 + System.Double.Epsilon) * Random.Shared.NextSystem.Double()???
 
-        //use double-floating point error to break the loop?
+        //use System.Double-floating point error to break the loop?
         while (Random.Shared.NextDouble() is >= 0.0 and < 1.0)
         {
             if(CancellationTokenSource.Token.IsCancellationRequested)
@@ -36,7 +36,7 @@ public class ControlFlowTests : TestBase, IDisposable
 #endif
             Assert.IsFalse(Random.Shared.Next(0, 九十六) < 四十八);
             Assert.IsTrue(Random.Shared.Next(0, 九十六) is >= 0 and < 九十六);
-            Assert.IsTrue(Random.Shared.NextDouble() is >= double.Epsilon and < 1.0);
+            Assert.IsTrue(Random.Shared.NextDouble() is >= System.Double.Epsilon and < 1.0);
             Assert.IsFalse(Random.Shared.Next(0, 九十六) is < 0 or >= 九十六);
         }
     }
