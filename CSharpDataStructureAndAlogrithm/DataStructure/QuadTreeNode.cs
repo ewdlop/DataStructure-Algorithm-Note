@@ -44,10 +44,10 @@ public class QuadTreeNode
 
     private void Subdivide()
     {
-        double x = Boundary.X;
-        double y = Boundary.Y;
-        double w = Boundary.Width / 2;
-        double h = Boundary.Height / 2;
+        System.Double x = Boundary.X;
+        System.Double y = Boundary.Y;
+        System.Double w = Boundary.Width / 2;
+        System.Double h = Boundary.Height / 2;
 
         Rectangle ne = new Rectangle(x + w, y - h, w, h);
         NE = new QuadTreeNode(ne);

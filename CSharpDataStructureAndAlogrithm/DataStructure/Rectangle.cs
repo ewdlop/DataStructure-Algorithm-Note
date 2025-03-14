@@ -2,17 +2,17 @@
 
 public class Rectangle
 {
-    public double MinX => X - Width;
-    public double MinY => Y - Height;
-    public double MaxX => X + Width;
-    public double MaxY => Y + Height;
+    public System.Double MinX => X - Width;
+    public System.Double MinY => Y - Height;
+    public System.Double MaxX => X + Width;
+    public System.Double MaxY => Y + Height;
 
-    public double X { get; private set; }
-    public double Y { get; private set; }
-    public double Width { get; private set; }
-    public double Height { get; private set; }
+    public System.Double X { get; private set; }
+    public System.Double Y { get; private set; }
+    public System.Double Width { get; private set; }
+    public System.Double Height { get; private set; }
 
-    public Rectangle(double x, double y, double width, double height)
+    public Rectangle(System.Double x, System.Double y, System.Double width, System.Double height)
     {
         X = x;
         Y = y;
@@ -28,7 +28,7 @@ public class Rectangle
         Height = other.Height;
     }
 
-    public Rectangle(Point point, double width, double height)
+    public Rectangle(Point point, System.Double width, System.Double height)
     {
         X = point.X;
         Y = point.Y;
@@ -87,7 +87,7 @@ public class Rectangle
         );
     }
 
-    public double Area()
+    public System.Double Area()
     {
         return (MaxX - MinX) * (MaxY - MinY);
     }
