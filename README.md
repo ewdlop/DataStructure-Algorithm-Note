@@ -189,3 +189,7 @@ Query optimization:
 - Create join optimization
 - Use materialized views
 - Design query rewriting rules
+
+##
+
+Implmented by LLMs, other, and me.
