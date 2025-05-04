@@ -30,4 +30,16 @@ public class ImmutableBinaryTree<T>
     {
         return new ImmutableBinaryTree<T>(Value, Left, newRight);
     }
+
+     // Replace the root value but keep structure
+    public ImmutableBinaryTree<T> ReplaceRootValue(T newValue)
+    {
+        return new ImmutableBinaryTree<T>(newValue, Left, Right);
+    }
+
+    // Example Insert pattern: replace root on match
+    public ImmutableBinaryTree<T> InsertAtRoot(T newValue)
+    {
+        return ReplaceRootValue(newValue);
+    }
 }
