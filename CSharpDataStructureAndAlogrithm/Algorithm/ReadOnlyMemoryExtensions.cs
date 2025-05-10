@@ -14,8 +14,8 @@ public static partial class ReadOnlyMemoryExtensions
         return string.Join(Environment.NewLine, Enumerable.Range(0, times + 1).Select(i =>
         {
             string ce = s.Slice(i * lineLength, Math.Min(s.Length - i * lineLength, lineLength)).ToString();
-            if (ce.Length < lineLength) ce = $"{ce}{new string(Enumerable.Repeat(' ', lineLength - ce.Length).ToArray())}";
-            return new string(ce.Reverse().ToArray());
+            if (ce.Length < lineLength) ce = $"{ce}{new string([.. Enumerable.Repeat(' ', lineLength - ce.Length)])}";
+            return new string([.. ce.Reverse()]);
         }));
     }
 
@@ -77,7 +77,7 @@ public static partial class ReadOnlyMemoryExtensions
         return d[len1, len2];
     }
 
-    public static double JaccardSimilarity(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
+    public static System.Double JaccardSimilarity(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
         HashSet<char> set1 = new HashSet<char>();
         foreach (char c in s1.Span)
@@ -96,7 +96,7 @@ public static partial class ReadOnlyMemoryExtensions
         HashSet<char> union = new HashSet<char>(set1);
         union.UnionWith(set2);
 
-        return (double)intersection.Count / union.Count;
+        return (System.Double)intersection.Count / union.Count;
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public static partial class ReadOnlyMemoryExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
+    public static System.Double JaroDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
         int len1 = s1.Length;
         int len2 = s2.Length;
@@ -147,7 +147,7 @@ public static partial class ReadOnlyMemoryExtensions
             k++;
         }
 
-        return ((matches / (double)len1) + (matches / (double)len2) + ((matches - transpositions / 2.0) / matches)) / 3.0;
+        return ((matches / (System.Double)len1) + (matches / (System.Double)len2) + ((matches - transpositions / 2.0) / matches)) / 3.0;
     }
 
     /// <summary>
@@ -156,9 +156,9 @@ public static partial class ReadOnlyMemoryExtensions
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static double JaroWinklerDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
+    public static System.Double JaroWinklerDistance(this ReadOnlyMemory<char> s1, ReadOnlyMemory<char> s2)
     {
-        double jaroDistance = JaroDistance(s1, s2);
+        System.Double jaroDistance = JaroDistance(s1, s2);
 
         int prefixLength = 0;
         for (int i = 0; i < Math.Min(s1.Length, s2.Length); i++)

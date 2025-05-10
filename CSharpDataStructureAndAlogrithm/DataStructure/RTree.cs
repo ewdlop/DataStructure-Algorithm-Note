@@ -44,12 +44,12 @@ public class RTree
         }
 
         RTreeNode? bestChild = null;
-        double minAreaIncrease = double.MaxValue;
+        System.Double minAreaIncrease = System.Double.MaxValue;
 
         foreach (RTreeNode child in node.Children)
         {
             Rectangle union = Rectangle.Union(child.Entries[0], rect);
-            double areaIncrease = union.Area() - child.Entries[0].Area();
+            System.Double areaIncrease = union.Area() - child.Entries[0].Area();
             if (areaIncrease < minAreaIncrease)
             {
                 minAreaIncrease = areaIncrease;
