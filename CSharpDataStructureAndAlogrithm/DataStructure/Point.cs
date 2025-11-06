@@ -2,10 +2,10 @@
 
 public class Point
 {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public System.Double X { get; set; }
+    public System.Double Y { get; set; }
 
-    public Point(double x, double y)
+    public Point(System.Double x, System.Double y)
     {
         X = x;
         Y = y;
